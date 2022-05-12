@@ -1,7 +1,11 @@
 from django.urls import path
-from .views import home, getAllItems
+from .views import home, getAllItems, addItem, addBill, Register, updateItems
 
 urlpatterns = [
     path('',home,name='home'),
-    path('getAllItems/',getAllItems,name="Getallitems")
+    path('getAllItems/',getAllItems,name="Getallitems"),
+    path('addItem/',addItem,name="Additem"),
+    path('register/',Register,name="Register"),
+    path('addBill/',addBill,name="Addbill"),
+    path('updateItem/',updateItems,name="UpdateItem")
 ]
