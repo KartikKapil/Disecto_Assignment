@@ -1,3 +1,4 @@
+from urllib import response
 from django.shortcuts import render
 from django.http import HttpResponse
 from numpy import product
@@ -7,6 +8,8 @@ from django.contrib.auth.models import User
 from main.models import Customer, Product, Bill
 from .serialzier import CustomerSerializer, ProductSerializer, BillSerializer
 from rest_framework.response import Response
+from reportlab.pdfgen import canvas  
+
 
 @api_view(['POST'])
 @permission_classes((permissions.AllowAny, ))
@@ -89,6 +92,29 @@ def updateItems(request):
         bill.save()
     
     return HttpResponse("Updated Bill")
+
+@api_view(['GET'])
+@permission_classes((permissions.AllowAny, ))
+def getPdf(request):
+    username = request.GET['username']
+    user = User.objects.get(username=username)
+    customer = Customer.objects.get(user=user)
+    bill_list = Bill.objects.filter(customer=customer)
+    List_of_items = []
+    for bill in bill_list:
+        List_of_items.append([bill.product.name,bill.quantity,bill.price])
+    
+    response = HttpResponse(content_type='application/pdf')  
+    response['Content-Disposition'] = 'attachment; filename="file.pdf"'
+    p = canvas.Canvas(response)  
+    p.setFont("Times-Roman", 12)  
+    p.drawString(110,700,"Customer Name : "+str(username)+"")
+    p.drawString(110,720,"Customer Address : "+str(customer.address)+"") 
+    p.drawString(110,740,"Customer Phone No : "+str(customer.phone_no)+"") 
+    
+    p.showPage()  
+    p.save()  
+    return response
 
 def home(request):
     return HttpResponse("Hello, world. You're at the main index.")
