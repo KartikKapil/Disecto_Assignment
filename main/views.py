@@ -1,8 +1,6 @@
 from urllib import response
 from django.shortcuts import render
 from django.http import HttpResponse
-from matplotlib.pyplot import table
-from numpy import product
 from rest_framework import permissions, status
 from rest_framework.decorators import (api_view, permission_classes)
 from django.contrib.auth.models import User
