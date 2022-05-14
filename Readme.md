@@ -2,7 +2,7 @@
 
 ## Approach
 
-I have created this application using the Django_rest_framework, I have used reportlab to generate the pdf for the same.
+I have created this application using the Django_rest_framework, I have used reportlab to generate the pdf for the same .
 
 **Live** - https://disectokartik.herokuapp.com/
 
