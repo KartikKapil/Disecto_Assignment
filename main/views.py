@@ -1,6 +1,7 @@
 from urllib import response
 from django.shortcuts import render
 from django.http import HttpResponse
+from matplotlib.pyplot import table
 from numpy import product
 from rest_framework import permissions, status
 from rest_framework.decorators import (api_view, permission_classes)
@@ -8,7 +9,9 @@ from django.contrib.auth.models import User
 from main.models import Customer, Product, Bill
 from .serialzier import CustomerSerializer, ProductSerializer, BillSerializer
 from rest_framework.response import Response
-from reportlab.pdfgen import canvas  
+from reportlab.pdfgen import canvas
+from reportlab.platypus import Table, TableStyle,Paragraph  
+from reportlab.lib import colors
 
 
 @api_view(['POST'])
@@ -108,12 +111,23 @@ def getPdf(request):
     response['Content-Disposition'] = 'attachment; filename="file.pdf"'
     p = canvas.Canvas(response)  
     p.setFont("Times-Roman", 12)  
-    p.drawString(110,700,"Customer Name : "+str(username)+"")
+    p.drawString(110,740,"Customer Name : "+str(username)+"")
     p.drawString(110,720,"Customer Address : "+str(customer.address)+"") 
-    p.drawString(110,740,"Customer Phone No : "+str(customer.phone_no)+"") 
-    
-    p.showPage()  
-    p.save()  
+    p.drawString(110,700,"Customer Phone No : "+str(customer.phone_no)+"")
+    p.drawString(150,640,"Name of Item    |   Quantity of Item   |   Total Cost")
+    f = Table(List_of_items)
+    f.setStyle(TableStyle([('BACKGROUND', (1, 1), (-2, -2), 
+    colors.green),
+                       ('TEXTCOLOR', (0, 0), (1, -1), colors.red)]))
+    width = 400
+    height = 100
+    x = 200
+    y = 600
+    f.wrapOn(p, width, height)
+    f.drawOn(p, x, y)
+    p.showPage()
+    p.save()
+
     return response
 
 def home(request):
